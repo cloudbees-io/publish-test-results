@@ -1,0 +1,52 @@
+# publish-test-results
+
+This is a common repo to host functions for publishing test results from different tools like (MSTEST, ProdPerfect, JUNIT, TESTNG, GO, ....)
+
+== Inputs
+
+[cols="2a,1a,1a,3a",options="header"]
+.Input details
+|===
+
+| Input name
+| Data type
+| Required
+| Description
+
+| `test-type`
+| string
+| Yes
+| The type of test tool.
+
+| `folder-name`
+| string
+| Yes
+| The Pattern or File or Folder path of the test report that needs conversion.
+
+|===
+
+
+### Usage
+
+```yaml 
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: trigger-publish-test-results-job
+
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  trigger-publish-test-results-using-action:
+    steps:
+    - name: publish-test-results
+      uses: calculi-corp/publish-test-results
+      with:
+        # Mandatory - testType what type of test report is provided
+        test-type: <testType>
+        # Mandatory  - folder name where the test has been carried out and kept.
+        folder-name: <folderName>
