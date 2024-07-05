@@ -14,7 +14,7 @@ runs:
   steps:
     - id: publish-test-results
       name: publish test results
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/publish-test-results:main-844e32a8694c0d1bd7105b816c2410b22349a9c8
+      uses: docker://public.ecr.aws/l7o7z1g8/actions/publish-test-results:main-daa2317242ef57e271904efb7bf69dc359283eb9
       shell: sh
       env:
         CONFIG_JSON: '{"metaInfo":{"testType":"${{ inputs.test-type }}","folderName":"${{ inputs.folder-name }}"}}'
