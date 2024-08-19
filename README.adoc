@@ -1,6 +1,6 @@
-# publish-test-results
+= CloudBees action: Publish test results
 
-This is a common repo to host functions for publishing test results from different tools like (MSTEST, ProdPerfect, JUNIT, TESTNG, GO, ....)
+Use this action to publish test results from tools such as MSTest, ProdPerfect, JUnit, and TestNG.
 
 == Inputs
 
@@ -14,39 +14,38 @@ This is a common repo to host functions for publishing test results from differe
 | Description
 
 | `test-type`
-| string
+| String
 | Yes
-| The type of test tool.
+| The name of the test tool.
 
 | `folder-name`
-| string
+| String
 | Yes
-| The Pattern or File or Folder path of the test report that needs conversion.
+| The pattern, file, or directory path of the test report to convert.
 
 |===
 
 
-### Usage
+== Usage example
 
-```yaml 
-apiVersion: automation.cloudbees.io/v1alpha1
-kind: workflow
-name: trigger-publish-test-results-job
+In your YAML file, add:
 
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-
-  trigger-publish-test-results-using-action:
-    steps:
-    - name: publish-test-results
-      uses: calculi-corp/publish-test-results
+[source,yaml]
+----
+    - name: Publish test results
+      uses: cloudbees-io/publish-test-results@v1
       with:
-        # Mandatory - testType what type of test report is provided
-        test-type: <testType>
-        # Mandatory  - folder name where the test has been carried out and kept.
-        folder-name: <folderName>
+        test-type: JUnit
+        folder-name: /example/mytest
+
+----
+== License
+
+This code is made available under the 
+link:https://opensource.org/license/mit/[MIT license].
+
+== References
+
+* Learn more about link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/actions[using actions in CloudBees workflows].
+* Learn about link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/[the CloudBees platform].
+
