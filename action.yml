@@ -15,7 +15,7 @@ runs:
     - id: publish-test-results
       name: publish test results
       # uses: docker://public.ecr.aws/l7o7z1g8/actions/publish-test-results:main-ba15dc53f17467593fac5149df0111653ead6cab 
-      uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/publish-test-results:main-1c4b39c73d19072fbcf61683f05d651b5235416c
+      uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/publish-test-results:main-fd165516bd3bf6ccd5afda3f311f67a4e2e96560 
       shell: sh
       env:
         CONFIG_JSON: '{"metaInfo":{"testType":"${{ inputs.test-type }}","folderName":"${{ inputs.folder-name }}"}}'
