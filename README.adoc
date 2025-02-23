@@ -1,6 +1,6 @@
 = CloudBees action: Publish test results
 
-Use this action to publish test results from tools such as MSTest, ProdPerfect, JUnit, and TestNG.
+Use this action to publish test results from tools such as MSTest, ProdPerfect, JUnit, TestNG, Go test, Jest, Playwright, Selenium and Tosca.
 
 == Inputs
 
