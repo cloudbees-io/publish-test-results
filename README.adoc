@@ -35,31 +35,31 @@ Use this action to publish test results from tools such as MSTest, ProdPerfect, 
 | Input format
 
 | MSTest
-| mstest/MSTEST
+| mstest / MSTEST
 
 | ProdPerfect
-| prodperfect/PRODPERFECT
+| prodperfect / PRODPERFECT
 
 | JUnit
-| junit/JUNIT
+| junit / JUNIT
 
 | TestNG
-| testng/TESTNG
+| testng / TESTNG
 
 | GO
-| go/GO
+| go / GO
 
 | Jest
-| jest/JEST
+| jest / JEST
 
 | Playwright
-| playwright/PLAYWRIGHT
+| playwright / PLAYWRIGHT
 
 | Selenium
-| selenium/SELENIUM
+| selenium / SELENIUM
 
 | Tosca
-| tosca/TOSCA
+| tosca / TOSCA
 
 |===
 
