@@ -16,7 +16,7 @@ Use this action to publish test results from tools such as MSTest, ProdPerfect, 
 | `test-type`
 | String
 | Yes
-| The name of the test tool.
+| The name of the test tool. Tools supported MSTest, ProdPerfect, JUnit, TestNG, Go test, Jest, Playwright, Selenium and Tosca.
 
 | `folder-name`
 | String
