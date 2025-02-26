@@ -25,6 +25,43 @@ Use this action to publish test results from tools such as MSTest, ProdPerfect, 
 
 |===
 
+== Supported tools
+
+[cols="1a,1a",options="header"]
+.Supported test-type with inputs
+|===
+
+| Supported test-type
+| Input format
+
+| MSTest
+| mstest/MSTEST
+
+| ProdPerfect
+| prodperfect/PRODPERFECT
+
+| JUnit
+| junit/JUNIT
+
+| TestNG
+| testng/TESTNG
+
+| GO
+| go/GO
+
+| Jest
+| jest/JEST
+
+| Playwright
+| playwright/PLAYWRIGHT
+
+| Selenium
+| selenium/SELENIUM
+
+| Tosca
+| tosca/TOSCA
+
+|===
 
 == Usage example
 
