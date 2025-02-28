@@ -1,21 +1,20 @@
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: action
-name: "publish test conversion"
+name: publish test conversion
+
 inputs:
   test-type:
-    description: 'Test Type indicating testing tool report that needs conversion'
+    description: Test Type indicating testing tool report that needs conversion
     required: true
-
   folder-name:
-    description: 'Folder name/File path for the location of the test reports'
+    description: Folder name/File path for the location of the test reports
     required: true
+    
 runs:
-  using: composite
   steps:
     - id: publish-test-results
       name: publish test results
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/publish-test-results:main-fd165516bd3bf6ccd5afda3f311f67a4e2e96560 
-      shell: sh
+      uses: docker://public.ecr.aws/l7o7z1g8/actions/publish-test-results:main-70c905477cc7c06613e3a45bab31d2eaa898ab07
       env:
         CONFIG_JSON: '{"metaInfo":{"testType":"${{ inputs.test-type }}","folderName":"${{ inputs.folder-name }}"}}'
         RUN_ID: ${{ cloudbees.run_id }}
@@ -23,7 +22,4 @@ runs:
         STEP_ID: ${{ step.internal.id }}
         DNS_URL: ${{ cloudbees.api.url }}
         JWT_TOKEN: ${{ cloudbees.api.token }}
-      run: |
-        set -x
-        cd /app
-        ./publish_test_results invoke -i $CONFIG_JSON
+      run: /app/publish-test-results invoke -i $CONFIG_JSON
