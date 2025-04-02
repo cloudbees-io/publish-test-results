@@ -93,7 +93,7 @@ In your YAML file, add:
 [source,yaml]
 ----
     - name: Publish test results
-      uses: https://github.com/cloudbees-io/publish-test-results@v1
+      uses: cloudbees-io/publish-test-results@v1
       with:
         test-type: TESTNG
         folder-name: /example/mytest
