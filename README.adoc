@@ -1,6 +1,7 @@
 = CloudBees action: Publish test results
 
-Use this action to publish test results from tools such as MSTest, ProdPerfect, JUnit, TestNG, Go test, Jest, Playwright, Selenium and Tosca.
+Use this action to publish test results if you are using a CloudBees platform workflow.
+This action supports many popular testing tools, and enables testing results from running a platform workflow to be displayed in the link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/workflows/test-results[Test results] tab of *Run details* and in the link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/analytics/test-insights[Test insights] analytics dashboard.
 
 == Inputs
 
@@ -16,7 +17,7 @@ Use this action to publish test results from tools such as MSTest, ProdPerfect, 
 | `test-type`
 | String
 | Yes
-| The name of the test tool.
+| The name of the testing tool^[1]^.
 
 | `folder-name`
 | String
@@ -25,41 +26,63 @@ Use this action to publish test results from tools such as MSTest, ProdPerfect, 
 
 |===
 
-== Supported tools
+^[1]^ The testing tool name must be formatted correctly, in either all lowercase, or all uppercase.
 
-[cols="1a,1a",options="header"]
-.Supported test-type with inputs
+== Supported testing tools
+
+NOTE: Only the testing tools listed in the table below are supported for use in this action.
+
+Use the given `test-type` input format to specify a testing tool.
+
+[cols="40%a,30%a,30%a"]
+.Supported testing tool names and `test-type` format
 |===
+h| Supported tool name
+2+h| Accepted `test-type` input formats
 
-| Supported test-type
-| Input format
-
-| MSTest
-| mstest / MSTEST
-
-| ProdPerfect
-| prodperfect / PRODPERFECT
-
-| JUnit
-| junit / JUNIT
-
-| TestNG
-| testng / TESTNG
+|
+| lowercase
+| UPPERCASE
 
 | GO
-| go / GO
+| `go`
+| `GO`
 
 | Jest
-| jest / JEST
+| `jest`
+| `JEST`
+
+| JMeter
+| `jmeter`
+| `JMETER`
+
+| JUnit
+| `junit`
+| `JUNIT`
+
+| MSTest
+| `mstest`
+| `MSTEST`
 
 | Playwright
-| playwright / PLAYWRIGHT
+| `playwright`
+| `PLAYWRIGHT`
+
+| ProdPerfect
+| `prodperfect`
+| `PRODPERFECT`
 
 | Selenium
-| selenium / SELENIUM
+| `selenium`
+| `SELENIUM`
+
+| TestNG
+| `testng`
+| `TESTNG`
 
 | Tosca
-| tosca / TOSCA
+| `tosca`
+| `TOSCA`
 
 |===
 
@@ -72,10 +95,11 @@ In your YAML file, add:
     - name: Publish test results
       uses: cloudbees-io/publish-test-results@v1
       with:
-        test-type: JUnit
+        test-type: TESTNG
         folder-name: /example/mytest
 
 ----
+
 == License
 
 This code is made available under the 
