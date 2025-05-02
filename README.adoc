@@ -86,19 +86,118 @@ h| Supported tool name
 
 |===
 
-== Usage example
+== Usage examples
 
-In your YAML file, add:
+=== Basic example
+
+The following is a basic example of using the action:
 
 [source,yaml]
 ----
-    - name: Publish test results
-      uses: cloudbees-io/publish-test-results@v2
-      with:
-        test-type: TESTNG
-        results-path: /example/mytest
+      - name: Publish test results
+        uses: cloudbees-io/publish-test-results@v2
+        with:
+          test-type: TESTNG
+          results-path: /example/mytest
 
 ----
+
+=== Go test example
+
+The following example specifies the GO testing tool.
+To use this tool, capture the output into a log, and then convert the log into a JUnit test report.
+Publish the results based on either:
+
+* A JUnit `test.xml`.
+* A JSON formatter.
+
+[source,yaml]
+----
+    - name: Publish GO test results
+      uses: cloudbees-io/publish-test-results@v2
+      with:
+        test-type: GO
+        results-path: /example/myGOtest
+
+----
+
+##I am not sure how to document the GO test##
+go test -v -timeout 15m -coverprofile $COVER -coverpkg "$PKGS_CSV" ./... | tee ./test.log
+cat ./test.log | go-junit-report >./test.xml
+
+=== Full workflow example
+
+In the following example, source code from a repository is checked out in the CloudBees platform and tested with the Playwright tool.
+After configuring AWS credentials, the test results are compressed and archived using Docker.
+The test results are uploaded to an AWS S3 bucket and published as evidence in the platform.
+
+.Example workflow YAML file
+[.collapsible]
+--
+
+[source, yaml,role="default-expanded"]
+----
+
+apiVersion: automation.cloudbees.io/v1alpha1
+name: trigger-publish-test-results-action
+kind: workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  Playwright-Test:
+    steps:
+      - name: Check out source code
+        uses: cloudbees-io/checkout@v1
+        with:
+          repository: my-name/my-repo-name
+
+      - name: PlayWright test
+        uses: cloudbees-io/publish-test-results@v2
+        with:
+          test-type: playwright
+          folder-name: ${{ cloudbees.workspace }}/test_data/playwright/results_failed.json
+
+      - name: Configure AWS credentials
+        uses: cloudbees-io/configure-aws-credentials@v1
+        with:
+          aws-region: us-east-1
+          aws-access-key-id: ${{ secrets.MY_AWS_ID }}
+          aws-secret-access-key: ${{ secrets.MY_AWS_SECRET_KEY }}
+
+      - id: compress-and-archive-test-evidence
+        name: Compress and archive test evidence
+        uses: docker://golang:1.20-alpine
+        shell: sh
+        run: |
+          mkdir -p ${{ cloudbees.workspace }}/test-data/playwright/test-results
+          tar -czf ${{ cloudbees.workspace }}/test-data/playwright/test-results.tar.gz -C ${{ cloudbees.workspace }}/test-data/playwright/test-results .
+
+      - name: S3 upload test evidence archive
+        uses: cloudbees-io/s3-upload-object@v1
+        with:
+          file-path: ${{ cloudbees.workspace }}/test-data/playwright/test-results.tar.gz
+          bucket-name: my-testing-logs
+          s3-path: s3-folder/${{ cloudbees.run_id}}.tar.gz
+          send-artifact-info: "true"
+
+  Test-evidence:
+      steps:
+      - name: Publish evidence item
+        uses: cloudbees-io/publish-evidence-item@v1
+        with:
+          content: |
+            - Run ID: ${{ cloudbees.run_id }}
+            - [backend.tar](https://ourcompany.com/repo/backend.tar)
+
+----
+--
 
 == License
 
