@@ -6,8 +6,8 @@ inputs:
   test-type:
     description: Test Type indicating testing tool report that needs conversion
     required: true
-  folder-name:
-    description: Folder name/File path for the location of the test reports
+  results-path:
+    description: The pattern, file, or directory path of the test report to convert
     required: true
     
 runs:
@@ -16,7 +16,7 @@ runs:
       name: publish test results
       uses: docker://public.ecr.aws/l7o7z1g8/actions/publish-test-results:main-b3bffe7cdf332bedaf24db361a5f560158464ed6
       env:
-        CONFIG_JSON: '{"metaInfo":{"testType":"${{ inputs.test-type }}","folderName":"${{ inputs.folder-name }}"}}'
+        CONFIG_JSON: '{"metaInfo":{"testType":"${{ inputs.test-type }}","folderName":"${{ inputs.results-path }}"}}'
         RUN_ID: ${{ cloudbees.run_id }}
         JOB_ID: ${{ job.id }}
         STEP_ID: ${{ step.internal.id }}
