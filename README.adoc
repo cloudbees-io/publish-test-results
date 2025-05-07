@@ -104,20 +104,19 @@ The following is a basic example of using the action:
 
 === Go test example
 
-The following example specifies the GO testing tool.
-To use this tool, capture the output into a log, and then convert the log into a JUnit test report.
-Publish the results using either:
+To use the GO testing tool, you must first capture the output into a log, and then convert the log into a JUnit test report.
+Then you can use this action to publish the test results to the platform.
 
-* A JUnit XML file.
-* A JSON formatter.
+In the following example, the following external tools are used to capture the data and create a test report:
 
-The following example publishes the results of the GO testing into a JUnit file.
+* link:https://github.com/jstemmer/go-junit-report[go-junit-report]
+* link:https://github.com/ctrf-io/go-ctrf-json-reporter[Go CTRF JSON format support] to create test reports that follow the link:https://ctrf.io/[Common Test Report Format (CTRF)] standard.
 
 [source,yaml]
 ----
 apiVersion: automation.cloudbees.io/v1alpha1
-name: trigger-publish-test-results-action
 kind: workflow
+name: GO-test
 
 on:
   push:
@@ -125,24 +124,38 @@ on:
       - main
 
 jobs:
-  Junit-Test:
+  GO-testing:
     steps:
-      - name: checkout-source-code
+      - name: Check out source code
         uses: cloudbees-io/checkout@v1
-
-      - name: Run Go Tests
-        run: |
-          go test ./...
-
-      - name: Publish-test-results
-        uses: cloudbees-io/publish-test-results@v2
         with:
-          test-type: junit
-          results-path: /example/mytest.xml
+          repository: gh-org/my-repo
+          ref: main
+          token: ${{ secrets.GIT_PAT }}
+
+      - name: Get test reports
+        uses: docker://golang:1.22-alpine
+        shell: sh
+        run: |
+          export PATH="${PATH}:${GOPATH}/bin"
+          go install github.com/jstemmer/go-junit-report@latest
+          go install github.com/ctrf-io/go-ctrf-json-reporter/cmd/go-ctrf-json-reporter@latest
+          mkdir ${{ cloudbees.workspace }}/test_reports
+          go clean
+          go test -v 2>&1 ./... | go-junit-report > ${{ cloudbees.workspace }}/test_reports/report.xml
+          go test -json ./... | go-ctrf-json-reporter -output ${{ cloudbees.workspace }}/test_reports/report.json
+
+      - name: Publish test results to platform
+        uses: cloudbees-io/publish-test-results@v1
+        with:
+          folder-name: ${{ cloudbees.workspace }}/test_reports
+          test-type: go
 
 ----
 
-=== Full workflow example
+After the run has completed, the test report is displayed in both menu:Analytics[Test insights] and menu:Run details[Test results] in the CloudBees platform.
+
+=== Playwright test example
 
 In the following example, source code from a repository is checked out in the CloudBees platform and tested with the Playwright tool.
 After configuring AWS credentials, the test results are compressed and archived using Docker.
