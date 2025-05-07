@@ -153,7 +153,10 @@ jobs:
 
 ----
 
-After the run has completed, the test report is displayed in both menu:Analytics[Test insights] and menu:Run details[Test results] in the CloudBees platform.
+After the run has completed, the test report is displayed in the CloudBees platform in:
+
+* *Test results* of the *Run details*.
+* *Test insights* analytics dashboard.
 
 === Playwright test example
 
