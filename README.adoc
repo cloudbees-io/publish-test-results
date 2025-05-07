@@ -106,24 +106,41 @@ The following is a basic example of using the action:
 
 The following example specifies the GO testing tool.
 To use this tool, capture the output into a log, and then convert the log into a JUnit test report.
-Publish the results based on either:
+Publish the results using either:
 
-* A JUnit `test.xml`.
+* A JUnit XML file.
 * A JSON formatter.
+
+The following example publishes the results of the GO testing into a JUnit file.
 
 [source,yaml]
 ----
-    - name: Publish GO test results
-      uses: cloudbees-io/publish-test-results@v2
-      with:
-        test-type: GO
-        results-path: /example/myGOtest
+apiVersion: automation.cloudbees.io/v1alpha1
+name: trigger-publish-test-results-action
+kind: workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Junit-Test:
+    steps:
+      - name: checkout-source-code
+        uses: cloudbees-io/checkout@v1
+
+      - name: Run Go Tests
+        run: |
+          go test ./...
+
+      - name: Publish-test-results
+        uses: cloudbees-io/publish-test-results@v2
+        with:
+          test-type: junit
+          results-path: /example/mytest.xml
 
 ----
-
-##I am not sure how to document the GO test##
-go test -v -timeout 15m -coverprofile $COVER -coverpkg "$PKGS_CSV" ./... | tee ./test.log
-cat ./test.log | go-junit-report >./test.xml
 
 === Full workflow example
 
