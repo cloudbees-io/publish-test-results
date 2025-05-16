@@ -14,8 +14,7 @@ runs:
   steps:
     - id: publish-test-results
       name: publish test results
-      # uses: docker://public.ecr.aws/l7o7z1g8/actions/publish-test-results:main-b3bffe7cdf332bedaf24db361a5f560158464ed6
-      uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/publish-test-results:main-487030ee36cb9ee11c00d5925790e6817906bf5e  
+      uses: docker://public.ecr.aws/l7o7z1g8/actions/publish-test-results:main-487030ee36cb9ee11c00d5925790e6817906bf5e
       env:
         CONFIG_JSON: '{"metaInfo":{"testType":"${{ inputs.test-type }}","folderName":"${{ inputs.results-path }}"}}'
         RUN_ID: ${{ cloudbees.run_id }}
