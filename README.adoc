@@ -148,7 +148,7 @@ jobs:
       - name: Publish test results to platform
         uses: cloudbees-io/publish-test-results@v1
         with:
-          folder-name: ${{ cloudbees.workspace }}/test_reports
+          results-path: ${{ cloudbees.workspace }}/test_reports
           test-type: go
 
 ----
@@ -195,7 +195,7 @@ jobs:
         uses: cloudbees-io/publish-test-results@v2
         with:
           test-type: playwright
-          folder-name: ${{ cloudbees.workspace }}/test_data/playwright/results_failed.json
+          results-path: ${{ cloudbees.workspace }}/test_data/playwright/results_failed.json
 
       - name: Configure AWS credentials
         uses: cloudbees-io/configure-aws-credentials@v1
