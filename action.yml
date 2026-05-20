@@ -14,7 +14,7 @@ runs:
   steps:
     - id: publish-test-results
       name: publish test results
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/publish-test-results:main-2b05ecba421ed51ead7b4f7dfe831e152cc0aeb9
+      uses: docker://public.ecr.aws/l7o7z1g8/actions/publish-test-results:main-652cccea402d3a3f341ccfd8f4196e4ff02c6c3b
       env:
         CONFIG_JSON: '{"metaInfo":{"testType":"${{ inputs.test-type }}","folderName":"${{ inputs.results-path }}"}}'
         RUN_ID: ${{ cloudbees.run_id }}
