@@ -28,6 +28,64 @@ This action supports many popular testing tools, and enables testing results fro
 
 ^[1]^ The testing tool name must be formatted correctly, in either all lowercase, or all uppercase.
 
+== Test report path
+
+The `results-path` input resolves in one of three ways.
+
+[cols="1a,2a",options="header"]
+.Accepted `results-path` values
+|===
+
+| Value
+| Resolves to
+
+| `results.json`
+| That single report file.
+
+| `published-reports/`
+| Every report directly inside the directory. Subdirectories are not searched.
+
+| `published-reports/*.json`
+| Every path matching the pattern.
+
+|===
+
+When the path resolves to more than one report, all of them are published together as a single result.
+Their test suites are combined, and the passed, failed, and skipped totals are summed across every report.
+You do not need to merge reports yourself before publishing.
+
+== Publishing more than one test run
+
+Most testing tools write their report to a fixed path.
+A job that runs its tests more than once therefore overwrites the earlier report, and only the last run is published.
+
+To publish every run, give each run its own report file, and point `results-path` at the directory holding them.
+The following example runs Playwright twice, writing a separate report each time:
+
+[source,yaml]
+----
+      - name: Run tests
+        uses: docker://mcr.microsoft.com/playwright:v1.60.0-noble
+        run: |
+          mkdir -p published-reports
+          PLAYWRIGHT_JSON_OUTPUT_FILE=published-reports/smoke.json \
+            npx playwright test --grep '@smoke' --reporter=json
+          PLAYWRIGHT_JSON_OUTPUT_FILE=published-reports/regression.json \
+            npx playwright test --grep '@regression' --reporter=json
+
+      - name: Publish test results
+        uses: cloudbees-io/publish-test-results@v2
+        with:
+          test-type: playwright
+          results-path: ${{ cloudbees.workspace }}/published-reports/*.json
+----
+
+CAUTION: Do not collect the reports in `test-results/`. That is Playwright's own default `outputDir`, and Playwright empties it at the start of every run, so each invocation would delete the previous report instead of adding to it. Use a directory your test tool does not manage, as above.
+
+IMPORTANT: Use one publish step covering all of the reports, as above, rather than adding a publish step after each test run.
+
+NOTE: Test suites are identified by name. If two reports published together each contain a suite of the same name, they are recorded as a single suite, and only one set of counts is kept. Note that tests written outside a `describe` block are grouped under the name of their spec file, so running one spec file across several reports produces the same suite name each time.
+
 == Supported testing tools
 
 NOTE: Only the testing tools listed in the table below are supported for use in this action.
