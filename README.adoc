@@ -42,10 +42,10 @@ The `results-path` input resolves in one of three ways.
 | `results.json`
 | That single report file.
 
-| `published-reports/`
+| `<directory>/`
 | Every report directly inside the directory. Subdirectories are not searched.
 
-| `published-reports/*.json`
+| `<directory>/*.json`
 | Every path matching the pattern.
 
 |===
@@ -60,6 +60,7 @@ Most testing tools write their report to a fixed path.
 A job that runs its tests more than once therefore overwrites the earlier report, and only the last run is published.
 
 To publish every run, give each run its own report file, and point `results-path` at the directory holding them.
+The directory name is not significant; `published-reports` below is only an example.
 The following example runs Playwright twice, writing a separate report each time:
 
 [source,yaml]
@@ -67,10 +68,12 @@ The following example runs Playwright twice, writing a separate report each time
       - name: Run tests
         uses: docker://mcr.microsoft.com/playwright:v1.60.0-noble
         run: |
-          mkdir -p published-reports
-          PLAYWRIGHT_JSON_OUTPUT_FILE=published-reports/smoke.json \
+          REPORTS=${{ cloudbees.workspace }}/published-reports
+          mkdir -p "$REPORTS"
+
+          PLAYWRIGHT_JSON_OUTPUT_FILE="$REPORTS/smoke.json" \
             npx playwright test --grep '@smoke' --reporter=json
-          PLAYWRIGHT_JSON_OUTPUT_FILE=published-reports/regression.json \
+          PLAYWRIGHT_JSON_OUTPUT_FILE="$REPORTS/regression.json" \
             npx playwright test --grep '@regression' --reporter=json
 
       - name: Publish test results
@@ -79,6 +82,9 @@ The following example runs Playwright twice, writing a separate report each time
           test-type: playwright
           results-path: ${{ cloudbees.workspace }}/published-reports/*.json
 ----
+
+Note that the report paths above are absolute.
+`PLAYWRIGHT_JSON_OUTPUT_FILE` is resolved against the working directory, whereas the `outputFile` in your Playwright config is resolved against the config directory, so a relative value can write somewhere the publish step is not looking.
 
 CAUTION: Do not collect the reports in `test-results/`. That is Playwright's own default `outputDir`, and Playwright empties it at the start of every run, so each invocation would delete the previous report instead of adding to it. Use a directory your test tool does not manage, as above.
 
